@@ -3,8 +3,14 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import axios from 'axios'
+import setTitle from './util/setTitle.js'
+window.setTitle = setTitle
+axios.defaults.baseURL = 'https://www.sevenglish.com/sevenglish'
 
 Vue.config.productionTip = false
+
+Vue.prototype.axios = axios
 
 /* eslint-disable no-new */
 new Vue({
