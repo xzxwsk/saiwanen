@@ -2,20 +2,23 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 
 import Vue from 'vue'
-import App from './App'
 import router from './router'
+import iView from 'iview'
 import axios from 'axios'
 import setTitle from './util/setTitle'
 import store from './store'
-window.setTitle = setTitle
+import 'iview/dist/styles/iview.css'
+import './assets/fonts/iconfont'
+import App from './App'
+
 axios.defaults.baseURL = 'https://www.sevenglish.com/sevenglish'
+window.setTitle = setTitle
 
 Vue.config.productionTip = false
-
 Vue.prototype.axios = axios
+Vue.use(iView)
 
 /* eslint-disable no-new */
-/* global setTitle */
 new Vue({
   el: '#app',
   store,

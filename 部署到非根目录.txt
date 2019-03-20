@@ -1,0 +1,10 @@
+nginx:
+location /test{
+    index index.html;
+    try_files $uri $uri/ /test/index.html;
+}
+
+config/index.js
+assetsPublicPath: '/test/',
+router/index.js
+base: 'test',

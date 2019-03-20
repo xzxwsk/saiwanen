@@ -1,18 +1,19 @@
 <template>
-  <div id="app">
+  <div id="app" class="main">
     <router-view/>
-    <loading v-if='LOADING'/>
+    <loading v-if='LOADING' :loadWord="LoadWord"/>
   </div>
 </template>
 
 <script>
 import {mapState} from 'vuex'
-import './assets/fonts/iconfont'
+import loading from './components/loading'
 export default {
   name: 'App',
+  components: {loading},
   computed: {
     ...mapState([
-      'LOADING'
+      'LOADING', 'LoadWord'
     ])
   }
 }
