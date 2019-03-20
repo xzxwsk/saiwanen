@@ -20,6 +20,7 @@
       <div class="txt">{{item.specname}} <span class="price">{{item.discount}}</span>元</div>
       <input type="button" class="btn" value="购买" @click="onConfirmOrder(index)" />
     </div>
+    <div><span class="iconfont icon-dizhi"></span></div>
   </div>
 </template>
 
@@ -45,6 +46,7 @@ export default {
         specname: '一月',
         discount: 180
       }]
+
     }
   },
   created () {
