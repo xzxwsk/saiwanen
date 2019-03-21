@@ -51,7 +51,16 @@ export default {
   },
   created () {
     setTitle('下单')
+    console.log(this.$route.params)
+    this.weui.alert('图形验证码不能为空！')
     // this.$store.commit('showLoading')
+    // this.axios.get('/weixin/getSpeList', {
+    //   params: {
+    //     proid: 2
+    //   }
+    // }).then(res => {
+    //   console.log(res)
+    // })
   },
   methods: {
     onConfirmOrder (index) {

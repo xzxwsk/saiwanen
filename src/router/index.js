@@ -6,16 +6,16 @@ import confirmOrder from '@/components/confirmOrder'
 Vue.use(Router)
 
 export default new Router({
-  base: 'test',
+  base: 'pay',
   mode: 'history',
   routes: [
     {
-      path: '/',
+      path: '/:prodid',
       name: 'index',
-      redirect: '/createOrder'
+      redirect: '/createOrder/:prodid'
     },
     {
-      path: '/createOrder',
+      path: '/createOrder/:prodid',
       name: 'createOrder',
       component: createOrder
     },

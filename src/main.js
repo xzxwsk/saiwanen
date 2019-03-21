@@ -3,22 +3,22 @@
 
 import Vue from 'vue'
 import router from './router'
-import iView from 'iview'
 import axios from 'axios'
+import weui from 'weui.js'
 import setTitle from './util/setTitle'
 import store from './store'
-import 'iview/dist/styles/iview.css'
+
+import 'weui/dist/style/weui.min.css'
 import './assets/fonts/iconfont'
 import App from './App'
 
-axios.defaults.baseURL = 'https://www.sevenglish.com/sevenglish'
+axios.defaults.baseURL = '/api/sevenglish' // 本地
+// axios.defaults.baseURL = '/sevenglish' // 正式环境
 window.setTitle = setTitle
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
-Vue.use(iView)
-
-Vue.prototype.axios = axios
+Vue.prototype.weui = weui
 
 /* eslint-disable no-new */
 new Vue({
