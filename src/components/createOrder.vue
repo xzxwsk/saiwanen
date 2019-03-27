@@ -174,6 +174,9 @@ export default {
           specid: this.spec[index].specid
         }
       }).then(res => {
+        if (!res.data.data) {
+          return
+        }
         this.$router.push({
           name: 'confirmOrder',
           params: {
