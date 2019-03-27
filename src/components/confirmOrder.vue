@@ -25,16 +25,18 @@
       <p>下单时间：{{detail.createdateStr}}</p>
     </div>
     <div class="count_label">合计：<span class="price">¥{{detail.sumamt}}</span></div>
-    <input type="button" class="btn" value="确认支付" />
+    <input type="button" class="btn" value="确认支付" @click="onPay" />
   </div>
 </template>
 
 <script>
-/* global setTitle */
+/* global setTitle, WeixinJSBridge */
 export default {
   name: 'createOrder',
   data () {
     return {
+      loadFlag: false,
+      orderid: '',
       userInfo: {
         memname: '王先生',
         mobileno: '152XXXX0011'
@@ -57,9 +59,62 @@ export default {
   created () {
     setTitle('确认订单')
     // this.$store.commit('showLoading')
+    let orderId = this.$route.params.orderid
+    this.orderid = orderId
+    this.initPage(orderId)
   },
   methods: {
-
+    // 获取订单详情
+    initPage (orderId) {
+      this.axios.get('/wxapp/getOrderDetails', {
+        params: {
+          orderid: orderId
+        }
+      }).then(res => {
+        console.log('订单详情：', res.data.data)
+        if (res.data.data) {
+          this.detail = res.data.data
+        }
+        this.loadFlag = true
+      }).catch(errMsg => {
+        console.error(errMsg) // 错误提示信息
+      })
+    },
+    // 付款
+    onPay (e) {
+      console.log(e)
+      this.axios.get('/weixinpay/buileorder_weixinpay', {
+        params: {
+          orderid: this.orderid
+        }
+      }).then(res => {
+        console.log('获取支付参数结果：', res.data)
+        if (typeof WeixinJSBridge === 'undefined') {
+          if (document.addEventListener) {
+            document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady, false)
+          } else if (document.attachEvent) {
+            document.attachEvent('WeixinJSBridgeReady', this.onBridgeReady)
+            document.attachEvent('onWeixinJSBridgeReady', this.onBridgeReady)
+          }
+        } else {
+          this.onBridgeReady()
+        }
+      })
+    },
+    onBridgeReady (getBrandWCPayRequest) {
+      WeixinJSBridge.invoke(
+        'getBrandWCPayRequest', getBrandWCPayRequest,
+        function (res) {
+          if (res.err_msg === 'get_brand_wcpay_request:ok') {
+            // 支付成功
+          } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
+            // 放弃支付
+          } else {
+            // 支付失败
+            this.weui.alert('支付失败！')
+          }
+        })
+    }
   }
 }
 </script>

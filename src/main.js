@@ -14,6 +14,7 @@ import App from './App'
 
 axios.defaults.baseURL = '/api/sevenglish' // 本地
 // axios.defaults.baseURL = '/sevenglish' // 正式环境
+
 window.setTitle = setTitle
 
 Vue.config.productionTip = false

@@ -9,7 +9,7 @@
         <div class="name">{{userInfo.memname}}</div>
         <div class="txt">{{userInfo.mobileno}}</div>
       </div>
-      <div class="word">{{address.conaddress ? address.conaddress : ''}}</div>
+      <div class="word" @click="onSelectAddr">{{address.conaddress ? address.conaddress : ''}}</div>
     </div>
     <div class="intro">
       <img :src="detail.covers" class="img" />
@@ -30,41 +30,157 @@ export default {
   name: 'createOrder',
   data () {
     return {
+      loadFlag: false,
+      // 跳转下单时使用
+      proid: '',
       userInfo: {
         memname: '王先生',
         mobileno: '152XXXX0011'
       },
+      // 当前地址
       address: {
-        conaddress: '幼儿园：四川省成都市武侯区红星幼儿园'
+        addid: 2,
+        conaddress: '汽车票：四川省成都市武侯区红星幼儿园',
+        index: 2
       },
+      // 地址列表
+      addressLs: [{
+        addid: 0,
+        conaddress: '飞机票：四川省成都市武侯区红星幼儿园',
+        label: '飞机票',
+        value: 0,
+        disabled: true // 不可用
+      },
+      {
+        addid: 1,
+        conaddress: '火车票：四川省成都市武侯区红星幼儿园',
+        label: '火车票',
+        value: 1
+      },
+      {
+        addid: 2,
+        conaddress: '汽车票：四川省成都市武侯区红星幼儿园',
+        label: '汽车票',
+        value: 2
+      },
+      {
+        addid: 3,
+        conaddress: '公车票：四川省成都市武侯区红星幼儿园',
+        label: '公车票',
+        value: 3
+      }],
       detail: {
         covers: require('../assets/logo.png'),
         title: 'XXXXXXXXXX课程',
         detaildescStr: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXXX'
       },
+      // 规格
       spec: [{
         specname: '一月',
         discount: 180
       }]
-
     }
   },
   created () {
+    let proid = this.$route.params.prodid
+    this.proid = proid
     setTitle('下单')
-    console.log(this.$route.params)
-    this.weui.alert('图形验证码不能为空！')
+    console.log('proid: ', proid)
+    // this.weui.alert('图形验证码不能为空！')
     // this.$store.commit('showLoading')
-    // this.axios.get('/weixin/getSpeList', {
-    //   params: {
-    //     proid: 2
-    //   }
-    // }).then(res => {
-    //   console.log(res)
-    // })
+    // 获取用户信息
+    this.getUserInfo(proid)
+    // 初始化页面数据
+    this.initPage(proid)
   },
   methods: {
+    // 获取用户信息（暂时没用）
+    getUserInfo (proid) {
+      this.axios.get('/weixin/getWxUserInfo').then(res => {
+        console.log('getWxUserInfo: ', res.data)
+        if (res.data.data) {
+          this.userInfo = res.data.data
+        }
+      })
+    },
+    // 初始化页面数据
+    initPage (proid) {
+      // 获取商品规格
+      this.axios.get('/weixin/getSpeList', {
+        params: {
+          proid: proid
+        }
+      }).then(res => {
+        if (res.data.data.length > 0) {
+          this.spec = res.data.data
+        }
+        // 获取商品详情
+        return this.axios.get('/wxapp/getProDetail', {
+          params: {
+            proid: proid
+          }
+        })
+      }).then(res => {
+        let detail = this.detail
+        if (res.data.data) {
+          detail = res.data.data
+          detail.detaildescStr = detail.detaildesc.replace(/<\/?.+?>/g, '').replace(/ /g, '')
+        }
+        this.detail = detail
+        // 获取地址列表
+        return this.axios.get('/weixin/getAddressList')
+      }).then(res => {
+        if (res.data.data.list.length > 0) {
+          let defaultAddress = {}
+          res.data.data.list.forEach(item => {
+            item.label = item.conaddress
+            item.value = item.addid
+            if (item.isdefault === 0) {
+              defaultAddress = item
+            }
+          })
+          this.address = defaultAddress.conaddress ? defaultAddress : res.data.data.list[0]
+          this.addressLs = res.data.data.list
+        }
+        this.loadFlag = true
+      }).catch(errMsg => {
+        console.error(errMsg) // 错误提示信息
+      })
+    },
+    // 选择地址
+    onSelectAddr () {
+      let me = this
+      this.weui.picker(this.addressLs, {
+        defaultValue: [this.address.index],
+        // onChange (result) {
+        //   console.log('onChange: ', result)
+        // },
+        onConfirm (result) {
+          console.log('onConfirm: ', result)
+          me.addressLs.some((item, index) => {
+            me.address = item
+            me.address.index = index
+            return item.addid === result[0].value
+          })
+        }
+      })
+    },
+    // 跳转确认订单
     onConfirmOrder (index) {
-      this.$router.push({name: 'confirmOrder'})
+      this.axios.get('/wxapp/doOrder', {
+        params: {
+          addid: this.address.addid,
+          proid: this.proid,
+          specid: this.spec[index].specid
+        }
+      }).then(res => {
+        this.$router.push({
+          name: 'confirmOrder',
+          params: {
+            orderid: res.data.data
+          }
+        })
+      })
     }
   }
 }
