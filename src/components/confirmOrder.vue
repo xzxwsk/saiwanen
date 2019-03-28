@@ -53,15 +53,17 @@ export default {
         orderno: '999090090XXXX',
         createdateStr: '2018-08-08 14:09:00',
         sumamt: 0.01
-      }
+      },
+      brandWCPayRequest: {}
     }
   },
   created () {
     setTitle('确认订单')
     // this.$store.commit('showLoading')
-    let orderId = this.$route.params.orderid
-    this.orderid = orderId
-    this.initPage(orderId)
+    this.orderId = this.$route.params.orderId
+    this.userInfo = this.$route.params.userInfo
+    this.address = this.$route.params.address
+    this.initPage(this.orderId)
   },
   methods: {
     // 获取订单详情
@@ -82,13 +84,14 @@ export default {
     },
     // 付款
     onPay (e) {
-      console.log(e)
+      console.log('orderId: ', this.orderId)
       this.axios.get('/weixinpay/buileorder_weixinpay', {
         params: {
-          orderid: this.orderid
+          orderid: this.orderId
         }
       }).then(res => {
-        console.log('获取支付参数结果：', res.data)
+        console.log('获取支付参数结果：', res.data.data)
+        this.brandWCPayRequest = res.data.data
         if (typeof WeixinJSBridge === 'undefined') {
           if (document.addEventListener) {
             document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady, false)
@@ -101,8 +104,11 @@ export default {
         }
       })
     },
-    onBridgeReady (getBrandWCPayRequest) {
+    onBridgeReady () {
+      let getBrandWCPayRequest = this.brandWCPayRequest
+      getBrandWCPayRequest.package = getBrandWCPayRequest._package
       let me = this
+      console.log('getBrandWCPayRequest: ', getBrandWCPayRequest)
       WeixinJSBridge.invoke(
         'getBrandWCPayRequest', getBrandWCPayRequest,
         function (res) {

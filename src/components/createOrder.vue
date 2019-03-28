@@ -201,8 +201,9 @@ export default {
         this.$router.push({
           name: 'confirmOrder',
           params: {
-            orderid: res.data.data,
-            accno: this.userInfo.accno
+            orderId: res.data.data,
+            userInfo: this.userInfo,
+            address: this.address
           }
         })
       })
