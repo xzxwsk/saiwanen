@@ -17,8 +17,8 @@
     </div>
     <div class="detail">简介：{{detail.detaildescStr}}</div>
     <div class="ls" v-for="(item, index) in spec" :key="index">
-      <div class="txt">{{item.specname}} <span class="price">{{item.discount}}</span>元</div>
-      <input type="button" class="btn" value="购买" @click="onConfirmOrder(index)" />
+      <div class="txt">{{item.specname}} <span v-if="item.show"><span class="price">{{item.discount}}</span>元</span></div>
+      <input v-if="item.show" type="button" class="btn" value="购买" @click="onConfirmOrder(index)" />
     </div>
     <div><span class="iconfont icon-dizhi"></span></div>
   </div>
@@ -77,7 +77,8 @@ export default {
       // 规格
       spec: [{
         specname: '一月',
-        discount: 180
+        discount: 180,
+        show: true
       }]
     }
   },
@@ -90,36 +91,30 @@ export default {
     // this.$store.commit('showLoading')
     // 获取用户信息
     this.getUserInfo(proid)
-    // 初始化页面数据
-    this.initPage(proid)
   },
   methods: {
-    // 获取用户信息（暂时没用）
+    // 获取用户信息
     getUserInfo (proid) {
       this.axios.get('/weixin/getWxUserInfo').then(res => {
         console.log('getWxUserInfo: ', res.data)
-        if (res.data.data) {
-          this.userInfo = res.data.data
+        if (res.data.status === 302) {
+          window.location = res.data.data
+        } else {
+          if (res.data.data) {
+            this.userInfo = res.data.data
+            // 初始化页面数据
+            this.initPage(proid)
+          }
         }
       })
     },
     // 初始化页面数据
     initPage (proid) {
-      // 获取商品规格
-      this.axios.get('/weixin/getSpeList', {
+      // 获取商品详情
+      this.axios.get('/wxapp/getProDetail', {
         params: {
           proid: proid
         }
-      }).then(res => {
-        if (res.data.data.length > 0) {
-          this.spec = res.data.data
-        }
-        // 获取商品详情
-        return this.axios.get('/wxapp/getProDetail', {
-          params: {
-            proid: proid
-          }
-        })
       }).then(res => {
         let detail = this.detail
         if (res.data.data) {
@@ -127,6 +122,28 @@ export default {
           detail.detaildescStr = detail.detaildesc.replace(/<\/?.+?>/g, '').replace(/ /g, '')
         }
         this.detail = detail
+
+        // 获取商品规格
+        return this.axios.get('/weixin/getSpeList', {
+          params: {
+            proid: proid
+          }
+        })
+      }).then(res => {
+        // 免费
+        if (this.detail.kind === 2) {
+          this.spec = [{
+            specname: '免费',
+            discount: '',
+            show: false
+          }]
+        } else if (res.data.data.length > 0) {
+          this.spec = res.data.data
+          this.spec.forEach(item => {
+            item.show = true
+          })
+        }
+
         // 获取地址列表
         return this.axios.get('/weixin/getAddressList')
       }).then(res => {
@@ -150,6 +167,10 @@ export default {
     // 选择地址
     onSelectAddr () {
       let me = this
+      // 免费
+      if (this.detail.kind === 2) {
+        return
+      }
       this.weui.picker(this.addressLs, {
         defaultValue: [this.address.index],
         // onChange (result) {
@@ -177,7 +198,8 @@ export default {
         this.$router.push({
           name: 'confirmOrder',
           params: {
-            orderid: res.data.data
+            orderid: res.data.data,
+            accno: this.userInfo.accno
           }
         })
       })

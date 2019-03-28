@@ -30,7 +30,7 @@
 </template>
 
 <script>
-/* global setTitle, WeixinJSBridge */
+/* global setTitle, WeixinJSBridge, wx */
 export default {
   name: 'createOrder',
   data () {
@@ -102,16 +102,18 @@ export default {
       })
     },
     onBridgeReady (getBrandWCPayRequest) {
+      let me = this
       WeixinJSBridge.invoke(
         'getBrandWCPayRequest', getBrandWCPayRequest,
         function (res) {
           if (res.err_msg === 'get_brand_wcpay_request:ok') {
             // 支付成功
+            wx.miniProgram.navigateTo({url: 'pages/login/login'})
           } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
             // 放弃支付
           } else {
             // 支付失败
-            this.weui.alert('支付失败！')
+            me.weui.alert('支付失败！')
           }
         })
     }
