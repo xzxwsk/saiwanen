@@ -112,11 +112,14 @@ export default {
       WeixinJSBridge.invoke(
         'getBrandWCPayRequest', getBrandWCPayRequest,
         function (res) {
-          if (res.err_msg === 'get_brand_wcpay_request:ok') {
+          console.log(res.errMsg, res.err_msg)
+          me.weui.alert(res.errMsg + '; ok: ' + (res.errMsg.indexOf('ok') !== -1) + '; fail: ' + (res.errMsg.indexOf('fail') !== -1))
+          if (res.errMsg.indexOf('ok') !== -1) {
             // 支付成功
-            wx.miniProgram.navigateTo({url: 'pages/login/login'})
-          } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
+            wx.miniProgram.redirectTo({url: 'pages/login/login'})
+          } else if (res.errMsg.indexOf('cancel') !== -1) {
             // 放弃支付
+            console.log('放弃支付')
           } else {
             // 支付失败
             me.weui.alert('支付失败！')
