@@ -38,21 +38,21 @@ export default {
       loadFlag: false,
       orderid: '',
       userInfo: {
-        memname: '王先生',
-        mobileno: '152XXXX0011'
+        memname: '',
+        mobileno: ''
       },
       address: {
-        conaddress: '幼儿园：四川省成都市武侯区红星幼儿园'
+        conaddress: ''
       },
       detail: {
-        payRemainingTime: '29:00',
+        payRemainingTime: '',
         covers: require('../assets/logo.png'),
-        title: 'XXXXXXXXXX课程',
-        price: 499.00,
-        quantity: '半学期',
-        orderno: '999090090XXXX',
-        createdateStr: '2018-08-08 14:09:00',
-        sumamt: 0.01
+        title: '',
+        price: 0,
+        quantity: '',
+        orderno: '',
+        createdateStr: '',
+        sumamt: 0
       },
       brandWCPayRequest: {}
     }
@@ -109,11 +109,12 @@ export default {
       getBrandWCPayRequest.package = getBrandWCPayRequest._package
       let me = this
       console.log('getBrandWCPayRequest: ', getBrandWCPayRequest)
+      // alert('支付参数brandWCPayRequest: ' + JSON.stringify(getBrandWCPayRequest))
       WeixinJSBridge.invoke(
         'getBrandWCPayRequest', getBrandWCPayRequest,
         function (res) {
-          console.log(res.errMsg, res.err_msg)
-          me.weui.alert(res.errMsg + '; ok: ' + (res.errMsg.indexOf('ok') !== -1) + '; fail: ' + (res.errMsg.indexOf('fail') !== -1))
+          console.log(res.errMsg)
+          // alert('支付结果res: ' + JSON.stringify(res))
           if (res.errMsg.indexOf('ok') !== -1) {
             // 支付成功
             wx.miniProgram.redirectTo({url: 'pages/login/login'})

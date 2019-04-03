@@ -34,52 +34,24 @@ export default {
       // 跳转下单时使用
       proid: '',
       userInfo: {
-        memname: '王先生',
-        mobileno: '152XXXX0011'
+        memname: '', // '王先生'
+        mobileno: '' // '152XXXX0011'
       },
       // 当前地址
       address: {
-        addid: 2,
-        conaddress: '汽车票：四川省成都市武侯区红星幼儿园',
-        index: 2
+        addid: '',
+        conaddress: '',
+        index: 0
       },
       // 地址列表
-      addressLs: [{
-        addid: 0,
-        conaddress: '飞机票：四川省成都市武侯区红星幼儿园',
-        label: '飞机票',
-        value: 0,
-        disabled: true // 不可用
-      },
-      {
-        addid: 1,
-        conaddress: '火车票：四川省成都市武侯区红星幼儿园',
-        label: '火车票',
-        value: 1
-      },
-      {
-        addid: 2,
-        conaddress: '汽车票：四川省成都市武侯区红星幼儿园',
-        label: '汽车票',
-        value: 2
-      },
-      {
-        addid: 3,
-        conaddress: '公车票：四川省成都市武侯区红星幼儿园',
-        label: '公车票',
-        value: 3
-      }],
+      addressLs: [],
       detail: {
         covers: require('../assets/logo.png'),
-        title: 'XXXXXXXXXX课程',
-        detaildescStr: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXXX'
+        title: '',
+        detaildescStr: ''
       },
       // 规格
-      spec: [{
-        specname: '一月',
-        discount: 180,
-        show: true
-      }]
+      spec: []
     }
   },
   created () {
@@ -156,7 +128,7 @@ export default {
               defaultAddress = item
             }
           })
-          this.address = defaultAddress.conaddress ? defaultAddress : res.data.data.list[0]
+          this.address = defaultAddress.addid ? defaultAddress : res.data.data.list[0]
           this.addressLs = res.data.data.list
         }
         this.loadFlag = true
@@ -188,6 +160,10 @@ export default {
     },
     // 跳转确认订单
     onConfirmOrder (index) {
+      // if (this.address.addid === '' || !this.address.addid) {
+      //
+      //   return
+      // }
       this.axios.get('/wxapp/doOrder', {
         params: {
           addid: this.address.addid,
