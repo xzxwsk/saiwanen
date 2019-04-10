@@ -30,7 +30,7 @@
 </template>
 
 <script>
-/* global setTitle, WeixinJSBridge, wx */
+/* global setTitle, WeixinJSBridge */
 export default {
   name: 'createOrder',
   data () {
@@ -117,7 +117,9 @@ export default {
           // alert('支付结果res: ' + JSON.stringify(res))
           if (res.errMsg.indexOf('ok') !== -1) {
             // 支付成功
-            wx.miniProgram.redirectTo({url: 'pages/login/login'})
+            // wx.miniProgram.redirectTo({url: 'pages/login/login'})
+            // 跳转公众号
+            me.doLocation('https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5MDgwOTEyNw==#wechat_redirect')
           } else if (res.errMsg.indexOf('cancel') !== -1) {
             // 放弃支付
             console.log('放弃支付')
@@ -126,6 +128,17 @@ export default {
             me.weui.alert('支付失败！')
           }
         })
+    },
+    doLocation (url) {
+      var a = document.createElement('a')
+      if (!a.click) {
+        window.location = url
+        return
+      }
+      a.setAttribute('href', url)
+      a.style.display = 'none'
+      document.body.appendChild(a)
+      a.click()
     }
   }
 }

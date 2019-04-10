@@ -20,7 +20,7 @@
       <div class="txt">{{item.specname}} <span v-if="item.show"><span class="price">{{item.discount}}</span>元</span></div>
       <input v-if="item.show" type="button" class="btn" value="购买" @click="onConfirmOrder(index)" />
     </div>
-    <!--<div><input type="button" value="跳转公众号" @tap="onGoWx"></div>-->
+    <!--<div><input type="button" value="跳转公众号" @click="onGoWx"></div>-->
   </div>
 </template>
 
@@ -197,8 +197,24 @@ export default {
         this.onBridgeReady()
       }
     },
+    doLocation (url) {
+      var a = document.createElement('a')
+      if (!a.click) {
+        window.location = url
+        return
+      }
+      a.setAttribute('href', url)
+      a.setAttribute('target', '_blank')
+      a.style.display = 'none'
+      document.body.appendChild(a)
+      a.click()
+    },
     onBridgeReady () {
-      WeixinJSBridge.call('closeWindow')
+      // WeixinJSBridge.call('closeWindow')
+      this.doLocation('https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5MDgwOTEyNw==#wechat_redirect')
+      window.opener = null
+      window.open('', '_self')
+      window.close()
     }
   }
 }
