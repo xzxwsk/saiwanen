@@ -113,16 +113,20 @@ export default {
       WeixinJSBridge.invoke(
         'getBrandWCPayRequest', getBrandWCPayRequest,
         function (res) {
-          console.log(res.errMsg)
+          console.log('res.errMsg：', res.errMsg)
           // alert('支付结果res: ' + JSON.stringify(res))
-          if (res.errMsg.indexOf('ok') !== -1) {
+          if (res['err_msg'].indexOf('ok') !== -1) {
             // 支付成功
             // wx.miniProgram.redirectTo({url: 'pages/login/login'})
             // 跳转公众号
-            me.doLocation('https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5MDgwOTEyNw==#wechat_redirect')
-          } else if (res.errMsg.indexOf('cancel') !== -1) {
+            // me.weui.alert('支付成功')
+            window.location.href = 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5MDgwOTEyNw==#wechat_redirect'
+            window.event.returnValue = false
+            // me.doLocation('https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5MDgwOTEyNw==#wechat_redirect')
+          } else if (res['err_msg'].indexOf('fail') !== -1) {
             // 放弃支付
             console.log('放弃支付')
+            // me.weui.alert('放弃支付')
           } else {
             // 支付失败
             me.weui.alert('支付失败！')
