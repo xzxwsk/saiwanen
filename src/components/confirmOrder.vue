@@ -120,7 +120,7 @@ export default {
             // wx.miniProgram.redirectTo({url: 'pages/login/login'})
             // 跳转公众号
             // me.weui.alert('支付成功')
-            window.location.href = 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5MDgwOTEyNw==#wechat_redirect'
+            window.location.href = 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5MDgwOTEyNw==&scene=126&bizpsid=0#wechat_redirect'
             window.event.returnValue = false
             // me.doLocation('https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU5MDgwOTEyNw==#wechat_redirect')
           } else if (res['err_msg'].indexOf('fail') !== -1) {
