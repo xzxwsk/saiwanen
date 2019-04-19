@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import createOrder from '@/components/createOrder'
 import confirmOrder from '@/components/confirmOrder'
+import newsDetail from '@/components/newsDetail'
 
 Vue.use(Router)
 
@@ -23,6 +24,11 @@ export default new Router({
       path: '/confirmOrder',
       name: 'confirmOrder',
       component: confirmOrder
+    },
+    {
+      path: '/newsDetail/:newsid',
+      name: 'newsDetail',
+      component: newsDetail
     }
   ]
 })

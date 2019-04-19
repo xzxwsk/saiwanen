@@ -1,11 +1,17 @@
 body{
   margin: 0 auto; padding: 0; width: 7.2rem; font-family: "microsoft yahei"; font-size: .32rem; line-height: 1.5; color: #000;
 }
-.main{
-  height: 100vh;
+.main{height: 100vh;
+  img{max-width: 100%;}
 }
 p{
   margin: 0; padding: 0;
+}
+li{
+  list-style: none;
+}
+a{
+  color: #333;
 }
 .clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden}
 .price{color: #FE3200 !important;}
