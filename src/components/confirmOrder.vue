@@ -1,7 +1,7 @@
 <template>
   <div class='container'>
     <div class="bg"></div>
-    <div class="rest_time">开通有效时间：{{detail.payRemainingTime}}</div>
+    <div class="rest_time">{{detail.prodatee !== null ? ('开通有效时间：' + detail.prodatee) : ''}}</div>
     <div class="addr_box">
       <div class="title">
         <svg class="icon" aria-hidden="true">
@@ -22,7 +22,7 @@
     </div>
     <div class="order_info">
       <p>订单编号：{{detail.orderno}}</p>
-      <p>下单时间：{{detail.createdateStr}}</p>
+      <p>下单时间：{{detail.orderdateStr}}</p>
     </div>
     <div class="count_label">合计：<span class="price">¥{{detail.sumamt}}</span></div>
     <input type="button" class="btn" value="确认支付" @click="onPay" />
@@ -45,13 +45,13 @@ export default {
         conaddress: ''
       },
       detail: {
-        payRemainingTime: '',
+        prodatee: '',
         covers: require('../assets/logo.png'),
         title: '',
         price: 0,
         quantity: '',
         orderno: '',
-        createdateStr: '',
+        orderdateStr: '',
         sumamt: 0
       },
       brandWCPayRequest: {}
@@ -76,6 +76,7 @@ export default {
         console.log('订单详情：', res.data.data)
         if (res.data.data) {
           this.detail = res.data.data
+          this.detail.orderdateStr = this.detail.orderdate
         }
         this.loadFlag = true
       }).catch(errMsg => {

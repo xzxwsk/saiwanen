@@ -17,7 +17,7 @@
     </div>
     <div class="detail">简介：{{detail.detaildescStr}}</div>
     <div class="ls" v-for="(item, index) in spec" :key="index">
-      <div class="txt">{{item.specname}} <span v-if="item.show"><span class="price">{{item.discount}}</span>元</span></div>
+      <div class="txt">{{item.specname}} <span v-if="item.show"><span class="price">{{item.discount === 1 ? '' : (item.discount * 10)}}</span>{{item.discount === 1 ? '无折扣' : '折'}}</span></div>
       <input v-if="item.show" type="button" class="btn" value="购买" @click="onConfirmOrder(index)" />
     </div>
     <!--<div><input type="button" value="跳转公众号" @click="onGoWx"></div>-->
